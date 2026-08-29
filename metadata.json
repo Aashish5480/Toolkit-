@@ -1,0 +1,6 @@
+{
+  "name": "Student Toolkit India",
+  "description": "Free study, exam, and AI tools for Indian school students, CBSE/NCERT boards, NEET & JEE aspirants.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
