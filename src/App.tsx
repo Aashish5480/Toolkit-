@@ -7,6 +7,7 @@ import { HomePage } from "./components/home/HomePage";
 import { StaticPages } from "./components/pages/StaticPages";
 import { MetaTags } from "./components/seo/MetaTags";
 import { AdsterraAd } from "./components/ads/AdsterraAd";
+import { AdsterraPopunder } from "./components/ads/AdsterraPopunder";
 
 // 21 Tool Components
 import { PercentageCalculator } from "./components/tools/PercentageCalculator";
@@ -147,6 +148,9 @@ export default function App() {
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900 antialiased font-sans selection:bg-blue-600 selection:text-white">
+      {/* Global Adsterra Popunder Script Integration */}
+      <AdsterraPopunder currentRoute={currentRoute} />
+
       {/* Dynamic SEO Meta Tags & JSON-LD */}
       <MetaTags
         title={

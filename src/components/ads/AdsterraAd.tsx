@@ -44,9 +44,34 @@ export function AdsterraAd({
       label: "Advertisement",
     };
 
-  const effectiveBannerKey = bannerKey || placementConfig.bannerKey || AD_CONFIG.defaultBannerKey;
-  const effectiveWidth = width || placementConfig.width || AD_CONFIG.defaultBannerWidth || 320;
-  const effectiveHeight = height || placementConfig.height || AD_CONFIG.defaultBannerHeight || 50;
+  const [isMobile, setIsMobile] = useState<boolean>(() => {
+    if (typeof window !== "undefined") {
+      return window.innerWidth < 768;
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Determine effective key & dimensions: 728x90 on desktop/tablet, 320x50 on mobile
+  const chosenBannerKey = isMobile
+    ? bannerKey || placementConfig.mobileBannerKey || AD_CONFIG.mobileBannerKey
+    : bannerKey || placementConfig.bannerKey || AD_CONFIG.defaultBannerKey;
+
+  const chosenWidth = isMobile
+    ? width || placementConfig.mobileBannerKey ? AD_CONFIG.mobileBannerWidth : 320
+    : width || placementConfig.width || AD_CONFIG.defaultBannerWidth || 728;
+
+  const chosenHeight = isMobile
+    ? height || placementConfig.mobileBannerKey ? AD_CONFIG.mobileBannerHeight : 50
+    : height || placementConfig.height || AD_CONFIG.defaultBannerHeight || 90;
+
   const scriptUrl = customScriptUrl || placementConfig.scriptUrl || AD_CONFIG.defaultScriptUrl;
   const effectiveId = id || `${placementConfig.id}-${Math.random().toString(36).substring(2, 8)}`;
 
@@ -91,15 +116,15 @@ export function AdsterraAd({
     container.innerHTML = "";
 
     // Case 1: Standard Adsterra Banner (atOptions format inside isolated iframe)
-    if (effectiveBannerKey) {
+    if (chosenBannerKey) {
       setHasContent(true);
       const iframe = document.createElement("iframe");
-      iframe.width = `${effectiveWidth}`;
-      iframe.height = `${effectiveHeight}`;
+      iframe.width = `${chosenWidth}`;
+      iframe.height = `${chosenHeight}`;
       iframe.style.border = "none";
       iframe.style.overflow = "hidden";
-      iframe.style.width = `${effectiveWidth}px`;
-      iframe.style.height = `${effectiveHeight}px`;
+      iframe.style.width = `${chosenWidth}px`;
+      iframe.style.height = `${chosenHeight}px`;
       iframe.scrolling = "no";
       iframe.title = "Advertisement";
 
@@ -116,14 +141,14 @@ export function AdsterraAd({
           <body>
             <script type="text/javascript">
               atOptions = {
-                'key' : '${effectiveBannerKey}',
+                'key' : '${chosenBannerKey}',
                 'format' : 'iframe',
-                'height' : ${effectiveHeight},
-                'width' : ${effectiveWidth},
+                'height' : ${chosenHeight},
+                'width' : ${chosenWidth},
                 'params' : {}
               };
             </script>
-            <script type="text/javascript" src="${ADSTERRA_INVOKE_DOMAIN}/${effectiveBannerKey}/invoke.js"></script>
+            <script type="text/javascript" src="${ADSTERRA_INVOKE_DOMAIN}/${chosenBannerKey}/invoke.js"></script>
           </body>
         </html>
       `;
@@ -163,13 +188,13 @@ export function AdsterraAd({
         container.innerHTML = "";
       }
     };
-  }, [isVisible, effectiveBannerKey, effectiveWidth, effectiveHeight, scriptUrl]);
+  }, [isVisible, chosenBannerKey, chosenWidth, chosenHeight, scriptUrl]);
 
   if (!AD_CONFIG.enabled || !placementConfig.enabled) {
     return null;
   }
 
-  const isBanner = !!effectiveBannerKey;
+  const isBanner = !!chosenBannerKey;
 
   return (
     <div
@@ -198,9 +223,9 @@ export function AdsterraAd({
           ref={containerRef}
           className="flex items-center justify-center overflow-hidden"
           style={{
-            width: isBanner ? `${effectiveWidth}px` : "100%",
-            height: isBanner ? `${effectiveHeight}px` : undefined,
-            minHeight: isBanner ? `${effectiveHeight}px` : undefined,
+            width: isBanner ? `${chosenWidth}px` : "100%",
+            height: isBanner ? `${chosenHeight}px` : undefined,
+            minHeight: isBanner ? `${chosenHeight}px` : undefined,
             maxWidth: "100%",
           }}
         />
