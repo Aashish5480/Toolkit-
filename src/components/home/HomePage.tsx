@@ -186,38 +186,46 @@ export function HomePage({ onNavigate }: HomePageProps) {
 
         {/* Tools Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filteredTools.map((tool) => (
-            <div
-              key={tool.slug}
-              onClick={() => onNavigate(tool.slug)}
-              className="group bg-white rounded-2xl border border-slate-200/90 p-5 shadow-2xs hover:shadow-md hover:border-blue-300 transition-all cursor-pointer flex flex-col justify-between"
-            >
-              <div className="space-y-2.5">
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 bg-slate-100 px-2 py-0.5 rounded">
-                    {tool.category}
-                  </span>
-                  {tool.isAiPowered && (
-                    <span className="text-[10px] font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded flex items-center gap-1 border border-blue-100">
-                      <Sparkles className="w-2.5 h-2.5" /> AI
+          {filteredTools.map((tool, idx) => (
+            <React.Fragment key={tool.slug}>
+              <div
+                onClick={() => onNavigate(tool.slug)}
+                className="group bg-white rounded-2xl border border-slate-200/90 p-5 shadow-2xs hover:shadow-md hover:border-blue-300 transition-all cursor-pointer flex flex-col justify-between"
+              >
+                <div className="space-y-2.5">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 bg-slate-100 px-2 py-0.5 rounded">
+                      {tool.category}
                     </span>
-                  )}
+                    {tool.isAiPowered && (
+                      <span className="text-[10px] font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded flex items-center gap-1 border border-blue-100">
+                        <Sparkles className="w-2.5 h-2.5" /> AI
+                      </span>
+                    )}
+                  </div>
+
+                  <h3 className="font-bold text-base text-slate-900 group-hover:text-blue-600 transition-colors">
+                    {tool.title}
+                  </h3>
+
+                  <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed">
+                    {tool.description}
+                  </p>
                 </div>
 
-                <h3 className="font-bold text-base text-slate-900 group-hover:text-blue-600 transition-colors">
-                  {tool.title}
-                </h3>
-
-                <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed">
-                  {tool.description}
-                </p>
+                <div className="pt-3 mt-3 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-slate-700 group-hover:text-blue-600">
+                  <span>Open Tool</span>
+                  <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </div>
               </div>
 
-              <div className="pt-3 mt-3 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-slate-700 group-hover:text-blue-600">
-                <span>Open Tool</span>
-                <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </div>
-            </div>
+              {/* Banner ad inserted after every 3 tools */}
+              {(idx + 1) % 3 === 0 && idx < filteredTools.length - 1 && (
+                <div className="col-span-1 sm:col-span-2 lg:col-span-3 py-1">
+                  <AdsterraAd placement="content" id={`home-dir-ad-${idx + 1}`} />
+                </div>
+              )}
+            </React.Fragment>
           ))}
         </div>
       </section>
